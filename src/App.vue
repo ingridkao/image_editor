@@ -69,7 +69,7 @@ const submitFile = () => {
 
 <style>
   body{
-    font-size: 16px;
+    font-size: 14px;
     background-color: #2f3033;
   }
   main{
