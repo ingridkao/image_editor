@@ -1,13 +1,14 @@
-<script setup lang="ts">
+<script setup>
 import { format } from '../assets/format'
 defineEmits(["update"])
 </script>
 
 <template>
+    <h2>
+        1. 輸出尺寸格式
+    </h2>
     <section>
-        <h2>
-            列印格式
-        </h2>
+        <p>選取輸出尺寸</p>
         <div>
             <button 
                 v-for="(item, key) in format" 
@@ -15,12 +16,8 @@ defineEmits(["update"])
                 @click="$emit('update', key)"
             >
                 <h5>{{ item.name }}</h5>
-                <h6>({{ item.w }} X {{ item.h }} cm)</h6>
-                <p>{{ item.desc }}</p>
+                <h6>({{ item.w }} X {{ item.h }} px)</h6>
             </button>
         </div>
     </section>
 </template>
-
-<style scoped>
-</style>

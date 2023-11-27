@@ -1,17 +1,17 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
-window.URL = window.URL || window.webkitURL
+// window.URL = window.URL || window.webkitURL
 
 const emit = defineEmits(["upload"])
 const fileEl = ref()
-const img = ref<File>()
+const img = ref()
+const imgFileName = ref('')
 // const previewMap = ref()
 
-const uploadFileHandle = (event:any) => {
+const uploadFileHandle = (event) => {
     const imgFile = event.target.files[0]
     img.value = imgFile
-    // console.log(imgFile);
-    
+    imgFileName.value = imgFile.name
     // 讀取 image 資料
     // previewMap.value = window.URL.createObjectURL(imgFile)
     getBase64(imgFile)
@@ -19,11 +19,11 @@ const uploadFileHandle = (event:any) => {
     event.target.value = null    
 }
 
-const getBase64 = (file:any) =>{
+const getBase64 = (file) =>{
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onload = () => {
-        emit('upload', reader.result)
+        emit('upload', reader.result, imgFileName.value)
     }
     reader.onerror = (error) => {
         console.log('Error: ', error);
@@ -36,10 +36,9 @@ const uploadFile = () => {
 </script>
 
 <template>
+    <h2>2. 上傳照片</h2>
     <section>
-        <h2>
-            拍照/上傳照片
-        </h2>
+        <p>僅支援png, jpeg, jpg，建議使用較為清晰的圖片</p>
         <input 
             ref="fileEl"
             type="file" 
@@ -50,7 +49,7 @@ const uploadFile = () => {
         />
         <div>
             <button @click="uploadFile">
-                拍照/上傳照片
+                上傳照片
             </button>
             <!-- <div class="img_box">
                 <img :src="previewMap" alt="" />

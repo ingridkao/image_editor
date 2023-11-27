@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { format, aspectRatio, printW, type FormatItemTypes } from '../assets/format'
 import { ref, reactive, watch  } from 'vue'
 const props = defineProps<{
-    targetKey: string,
-    photoFile: string,
+    fileName: string,
+    photeCropFile: any,
+    stageObj: any
 }>()
 
 // 螢幕寬度的內距
@@ -11,86 +11,87 @@ const props = defineProps<{
 // 預留給瀏覽器的scrollbar寬度
 // const scrollbar = 18
 // const width = window.innerWidth - windowPadding - scrollbar
-const width:number = 320
-const height:number = Math.round(width/aspectRatio)
-
-const configKonva = reactive ({
+// 外殼stage
+const aspectRatio:number = 6/4
+const width:number = 600
+const height:number = width/aspectRatio
+const configStage = reactive ({
     width: width,
     height: height,
-});
-const configBgRect = reactive ({
+})
+
+// 浮水印
+const watermarkObj = new Image()
+watermarkObj.src = '/D23-01940_1300X1656_h.png'
+const watermarkRatio = 1300/1656
+
+const configWatermark = reactive ({
     x: 0,
     y: 0,
     width: width,
     height: height,
-    fill: "#ddd"
-});
-
-const imageObj = new Image()
-imageObj.src = '/demo.jpg'
-
-// 螢幕上尺寸和實際列印比率
-const translateRatio = Math.round(width/printW)
-const configRect = reactive ({
-    // x: 0,
-    // y: 0,
-    width: 28*translateRatio,
-    height: 35*translateRatio,
-    stroke: "#ddd",
-    strokeWidth: 1,
-    image: imageObj
-});
-
-const printLayout = reactive ({
-    row: 2,
-    col: 4,
-    gap: 15
+    image: watermarkObj
 })
 
-const updateRect = () => {
-    const targetFormat = (format[props.targetKey]? format[props.targetKey]: {}) as FormatItemTypes
-    const {w, h, row, col, gap} = targetFormat
-    configRect.width = w*translateRatio || 0
-    configRect.height = h*translateRatio || 0
-    printLayout.row = row || 1
-    printLayout.col = col || 1
-    printLayout.gap = gap || 10
-}
-const updateImage = () => {
-    // ToDo 裁切圖片
-    const images = new Image()
-    images.src = props.photoFile    
-    images.onload = (e:any) => {
-        if(e && e.target){
-            console.log(e.target.width);
-            console.log(e.target.height);
+watch(
+    () => props.stageObj,
+    (stageObj) => {
+        if(stageObj.width && stageObj.height) {
+            configStage.width = stageObj.width
+            configStage.height = stageObj.height
+
+            configWatermark.width = stageObj.width
+            // 讓浮水印垂直置中
+            const imgH = stageObj.width/watermarkRatio
+            configWatermark.height = imgH
+            configWatermark.y = -(imgH - stageObj.height) /2
         }
-        configRect.image = images
-    }
-}
+    },
+    {deep: true}
+)
+
+// 照片
+const imageObj = new Image()
+const configImageRect = reactive ({
+    name: 'downloadImage',
+    x: 0,
+    y: 0,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+    width: width,
+    height: height,
+    image: imageObj
+})
 
 watch(
-    () => props.targetKey,
-    (targetKey) => {
-        if(targetKey) updateRect()
-    },{ immediate: true }
-)
-watch(
-    () => props.photoFile,
-    (photoFile) => {
-        if(photoFile) updateImage()
-    },{immediate: true}
+    () => props.photeCropFile,
+    () => {
+        configImageRect.width = props.photeCropFile.width
+        configImageRect.height = props.photeCropFile.height
+
+        configImageRect.x = props.photeCropFile.x
+        configImageRect.y = props.photeCropFile.y
+        configImageRect.rotation = props.photeCropFile.rotation
+
+        configImageRect.image = props.photeCropFile.image
+        configImageRect.scaleX = props.photeCropFile.scaleX
+        configImageRect.scaleY = props.photeCropFile.scaleY
+    },
+    {deep: true}
 )
 
 const stageRef = ref()
 const downloadURI = () => {
-    const dataURL = stageRef.value.getStage().toDataURL()
-
+    const dataURL = stageRef.value.getStage().toDataURL({ pixelRatio: 1.5 })
     const link = document.createElement('a')
-    link.download = 'stage.png'
+
+    const simpleName = props.fileName.split('.')
+    
+    link.download = `${simpleName[0]}_${new Date().getTime()}.${simpleName[1]}`
     link.href = dataURL
     document.body.appendChild(link)
-    link.click();
+    link.click()
     document.body.removeChild(link)
 }
 
@@ -98,30 +99,32 @@ const downloadURI = () => {
 
 <template>
     <section>
-        <h2>
-            預覽
-        </h2>
-        <v-stage ref="stageRef" :config="configKonva">
+        <div>
+            <p>預覽並加上浮水印</p>
+            <button @click="downloadURI">
+                另存圖檔
+            </button>
+        </div>
+        <v-stage ref="stageRef" :config="configStage">
             <v-layer>
-                <v-rect :config="configBgRect" />
-                <template v-for="rows in printLayout.row" :key="rows">
-                    <v-image 
-                        v-for="cols in printLayout.col"
-                        :key="cols"
-                        :config="{
-                            ...configRect, 
-                            x: ((cols-1)*(configRect.width + printLayout.gap) + printLayout.gap), 
-                            y: ((rows-1)*(configRect.height + printLayout.gap) + printLayout.gap)
-                        }"
-                    />
-                </template>
+                <v-image :config="configImageRect" />
+            </v-layer>
+            <v-layer>
+                <v-image :config="configWatermark" />
             </v-layer>
         </v-stage>
-        <button @click="downloadURI">
-            另存
-        </button>
+
     </section>
 </template>
 
-<style>
+<style scoped>
+div{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-direction: row;
+}
+button{
+    font-weight: bold;
+}
 </style>
