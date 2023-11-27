@@ -4,7 +4,6 @@ import { ref, reactive, watch  } from 'vue'
 const emit = defineEmits(["uploadBg", "uploadImg"])
 const props = defineProps<{
     targetKey: string,
-    targetPos: string,
     photoFile: string,
 }>()
 
@@ -159,24 +158,6 @@ watch(
 //     emit('upload', configImageRect)
 // }
 
-// 下拉選單選取圖片位置
-// const applyCrop = (pos) => {
-//     // const img = layer.findOne('.image');
-//     // img.setAttr('lastCropUsed', pos);
-//     // const crop = getCrop(
-//     //     img.image(),
-//     //     { width: img.width(), height: img.height() },
-//     //     pos
-//     // );
-//     // img.setAttrs(crop);
-// }
-// watch(
-//     ()=>props.targetPos,
-//     (newOption, oldOption) => {
-// //     // if (newOption === '' || newOption === '--') return 
-// //     // applyCrop(newOption)
-//     }
-// )
 
 </script>
 

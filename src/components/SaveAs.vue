@@ -101,7 +101,7 @@ const downloadURI = () => {
     <section>
         <div>
             <p>預覽並加上浮水印</p>
-            <button @click="downloadURI">
+            <button @click="downloadURI" class="green">
                 另存圖檔
             </button>
         </div>

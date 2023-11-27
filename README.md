@@ -24,6 +24,16 @@
     npm install vue-konva konva --save
 
  ```
+   - 拖拉
+      [konva官方教學 - 中文](http://konvajs-doc.bluehymn.com/docs/drag_and_drop/Drag_Events.html)
+      [konva官方教學 - vue](http://konvajs-doc.bluehymn.com/docs/vue/Drag_And_Drop.html)
+
+   - Transformer(縮放旋轉)
+      [konva官方教學 - 中文](http://konvajs-doc.bluehymn.com/docs/select_and_transform/Basic_demo.html)
+      [konva官方教學 - vue](http://konvajs-doc.bluehymn.com/docs/vue/Transformer.html)
+
+
+
 ## Project Setup
 
 ```sh

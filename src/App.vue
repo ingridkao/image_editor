@@ -1,7 +1,6 @@
 <script setup>
 import UploadFile from './components/UploadFile.vue'
 import SizeSelect from './components/SizeSelect.vue'
-// import PosSelect from './components/PosSelect.vue'
 import CropFile from './components/CropFile.vue'
 import SaveAs from './components/SaveAs.vue'
 
@@ -13,7 +12,6 @@ const photeCropObj = ref({})
 const stageObj = ref()
 
 const targetKey = ref('')
-const targetPos = ref('')
 const updateImage = (file, name) => {
     photeFile.value = file
     photeFileName.value = name
@@ -27,9 +25,7 @@ const updateCropImg = (obj) => {
 const updateBg = (obj) => {
     stageObj.value = obj
 }
-// const updatePos = (key) => {
-//     targetPos.value = key
-// }
+
 const submitFile = () => {
     // const formData = new FormData();
     // formData.append('file', img.value);
@@ -48,10 +44,8 @@ const submitFile = () => {
                 @update="updateSize" 
             />
             <UploadFile @upload="updateImage" />
-            <!-- <PosSelect @update="updatePos" /> -->
             <CropFile 
                 :targetKey="targetKey" 
-                :targetPos="targetPos" 
                 :photoFile="photeFile"
                 @uploadImg="updateCropImg"
                 @uploadBg="updateBg"
@@ -70,7 +64,9 @@ const submitFile = () => {
 <style>
   body{
     font-size: 14px;
-    background-color: #2f3033;
+    background-color: #fff;
+    color: #3c3a3a;
+    padding-top: 1rem;
   }
   main{
     display: flex;
@@ -79,11 +75,12 @@ const submitFile = () => {
     gap: 1rem;
   }
   section{
-    margin: 0 0 2rem 1rem;
+    margin: 0 0 1.5rem 1.5rem;
   }
   h2{
-    font-size: 1.3rem;
-    color: #e8dbd3;
+    font-size: 1.1rem;
+    color: #3c3a3a;
+    font-weight: bold;
   }
   p{
     margin-bottom: .25rem;
@@ -92,11 +89,18 @@ const submitFile = () => {
     font-size: 1.2rem;
     outline: none;
     border: none;
-    margin: .5rem .5rem .5rem 0;
-    padding: .5rem;
-    border-radius: 0.25rem;
+    margin: .3rem .3rem .3rem 0;
+    padding: 0.3rem 1.5rem;
+    border-radius: 2.5rem;
     cursor: pointer;
-    background-color: #d5dfe0;
+    background-color: #fff;
+    color: #00a161;
+    border: 1px solid #00a161;
+    box-shadow: 0px 8px 15px rgba(60, 58, 58, 0.15);
+  }
+  button.green{
+    background-color: #00a161;
+    color: #fff;
   }
   select{
     font-size: 1rem;
