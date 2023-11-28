@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 // 外殼stage
-const aspectRatio:number = 6/4
+const aspectRatio:number = 418/333
 const width:number = 600
 const height:number = width/aspectRatio
 const configStage = reactive ({
@@ -23,7 +23,7 @@ const configBackRect = reactive ({
     name: 'backColor',
     width: width,
     height: height,
-    fill: "#ddd"
+    fill: "#f7f7f7"
 })
 
 
@@ -185,7 +185,6 @@ watch(
                         ref="transformer" 
                         :config="{
                             keepRatio: true,
-                            centeredScaling: true,
                             rotationSnaps: [0, 90, 180, 270]
                         }"
                     />

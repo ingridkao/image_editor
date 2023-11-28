@@ -12,19 +12,19 @@ const props = defineProps<{
 // const scrollbar = 18
 // const width = window.innerWidth - windowPadding - scrollbar
 // 外殼stage
-const aspectRatio:number = 6/4
+const aspectRatio:number = 418/333
 const width:number = 600
 const height:number = width/aspectRatio
 const configStage = reactive ({
     width: width,
     height: height,
+    fill: '#f7f7f7'
 })
 
 // 浮水印
 const watermarkObj = new Image()
 watermarkObj.src = '/D23-01940_1300X1656_h.png'
 const watermarkRatio = 1300/1656
-
 const configWatermark = reactive ({
     x: 0,
     y: 0,
@@ -88,43 +88,53 @@ const downloadURI = () => {
 
     const simpleName = props.fileName.split('.')
     
-    link.download = `${simpleName[0]}_${new Date().getTime()}.${simpleName[1]}`
+    link.download = `${simpleName[0]}_${new Date().getTime()}.png`
     link.href = dataURL
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
 }
 
+const watermark = ref(false)
 </script>
 
 <template>
     <section>
-        <div>
-            <p>預覽並加上浮水印</p>
+        <div class="cropFileBox">
+            <div>
+                <p>預覽</p>
+                <input type="checkbox" v-model="watermark" />
+                <label for="scales">浮水印</label>
+            </div>
             <button @click="downloadURI" class="green">
                 另存圖檔
             </button>
         </div>
-        <v-stage ref="stageRef" :config="configStage">
-            <v-layer>
-                <v-image :config="configImageRect" />
-            </v-layer>
-            <v-layer>
-                <v-image :config="configWatermark" />
-            </v-layer>
-        </v-stage>
+        <div class="cropFileBoxKkonvaContent">
+            <v-stage ref="stageRef" :config="configStage">
+                <v-layer>
+                    <v-image :config="configImageRect" />
+                </v-layer>
+                <v-layer v-if="watermark">
+                    <v-image :config="configWatermark" />
+                </v-layer>
+            </v-stage>
+        </div>
 
     </section>
 </template>
 
-<style scoped>
-div{
+<style>
+.cropFileBox{
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     flex-direction: row;
 }
-button{
+.cropFileBox button{
     font-weight: bold;
+}
+.cropFileBoxKkonvaContent{
+    background-color: #f7f7f7;
 }
 </style>
